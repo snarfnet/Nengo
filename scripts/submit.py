@@ -4,6 +4,7 @@ import time
 from asc_api import api, find_app_id, get_or_create_version, get_localization_id
 
 APP_VERSION = os.environ.get("APP_VERSION", "1.1")
+BUILD_NUMBER = os.environ.get("BUILD_NUMBER", "")
 REVIEW_CONTACT = {
     "contactFirstName": "東京",
     "contactLastName": "なす",
@@ -13,14 +14,16 @@ REVIEW_CONTACT = {
 
 
 def wait_for_build(app_id):
-    print("Waiting for processed build...")
+    print(f"Waiting for processed build (expecting build {BUILD_NUMBER or 'any'})...")
     for attempt in range(50):
-        payload = api("GET", f"/builds?filter[app]={app_id}&sort=-uploadedDate&limit=5")
+        payload = api("GET", f"/builds?filter[app]={app_id}&sort=-uploadedDate&limit=10")
         for item in payload.get("data", []):
             attrs = item["attributes"]
             version = attrs.get("version", "")
             state = attrs.get("processingState", "")
             print(f"  build {version}: {state}")
+            if BUILD_NUMBER and version != BUILD_NUMBER:
+                continue
             if version and state == "VALID":
                 return item["id"]
         print(f"  attempt {attempt + 1}/50, waiting 30s")
@@ -109,38 +112,36 @@ def main():
             else:
                 raise
 
+    # Clean up any stale review submissions
     try:
-        review = api("POST", "/reviewSubmissions", json={
-            "data": {
-                "type": "reviewSubmissions",
-                "attributes": {"platform": "IOS"},
-                "relationships": {"app": {"data": {"type": "apps", "id": app_id}}},
-            }
-        })
-        review_id = review["data"]["id"]
-    except RuntimeError as e:
-        if "409" in str(e):
-            print("Review submission already exists, fetching...")
-            payload = api("GET", f"/apps/{app_id}/reviewSubmissions?filter[state]=READY_FOR_REVIEW,WAITING_FOR_REVIEW")
-            review_id = payload["data"][0]["id"]
-        else:
-            raise
+        existing = api("GET", f"/apps/{app_id}/reviewSubmissions?filter[state]=READY_FOR_REVIEW")
+        for item in existing.get("data", []):
+            try:
+                api("DELETE", f"/reviewSubmissions/{item['id']}")
+                print(f"Deleted stale review submission {item['id']}")
+            except RuntimeError:
+                pass
+    except RuntimeError:
+        pass
 
-    try:
-        api("POST", "/reviewSubmissionItems", json={
-            "data": {
-                "type": "reviewSubmissionItems",
-                "relationships": {
-                    "reviewSubmission": {"data": {"type": "reviewSubmissions", "id": review_id}},
-                    "appStoreVersion": {"data": {"type": "appStoreVersions", "id": version_id}},
-                },
-            }
-        })
-    except RuntimeError as e:
-        if "409" in str(e):
-            print("Review submission item already exists, skipping")
-        else:
-            raise
+    review = api("POST", "/reviewSubmissions", json={
+        "data": {
+            "type": "reviewSubmissions",
+            "attributes": {"platform": "IOS"},
+            "relationships": {"app": {"data": {"type": "apps", "id": app_id}}},
+        }
+    })
+    review_id = review["data"]["id"]
+
+    api("POST", "/reviewSubmissionItems", json={
+        "data": {
+            "type": "reviewSubmissionItems",
+            "relationships": {
+                "reviewSubmission": {"data": {"type": "reviewSubmissions", "id": review_id}},
+                "appStoreVersion": {"data": {"type": "appStoreVersions", "id": version_id}},
+            },
+        }
+    })
 
     api("PATCH", f"/reviewSubmissions/{review_id}", json={
         "data": {"type": "reviewSubmissions", "id": review_id, "attributes": {"submitted": True}}

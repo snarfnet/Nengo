@@ -1,0 +1,87 @@
+{
+  "version": "1.0.0",
+  "lastScanned": 1778137682356,
+  "projectRoot": "C:\\Users\\Windows\\Nengo",
+  "techStack": {
+    "languages": [],
+    "frameworks": [],
+    "packageManager": null,
+    "runtime": null
+  },
+  "build": {
+    "buildCommand": null,
+    "testCommand": null,
+    "lintCommand": null,
+    "devCommand": null,
+    "scripts": {}
+  },
+  "conventions": {
+    "namingStyle": null,
+    "importStyle": null,
+    "testPattern": null,
+    "fileOrganization": null
+  },
+  "structure": {
+    "isMonorepo": false,
+    "workspaces": [],
+    "mainDirectories": [
+      "scripts"
+    ],
+    "gitBranches": null
+  },
+  "customNotes": [],
+  "directoryMap": {
+    "AppStoreAssets": {
+      "path": "AppStoreAssets",
+      "purpose": null,
+      "fileCount": 3,
+      "lastAccessed": 1778137682309,
+      "keyFiles": [
+        "AppIcon-1024.png",
+        "Nengo-AppStoreAssets-v1.1.zip",
+        "NengoHero.png"
+      ]
+    },
+    "Nengo": {
+      "path": "Nengo",
+      "purpose": null,
+      "fileCount": 4,
+      "lastAccessed": 1778137682310,
+      "keyFiles": [
+        "BannerAdView.swift",
+        "ContentView.swift",
+        "Info.plist",
+        "NengoApp.swift"
+      ]
+    },
+    "Nengo.xcodeproj": {
+      "path": "Nengo.xcodeproj",
+      "purpose": null,
+      "fileCount": 1,
+      "lastAccessed": 1778137682311,
+      "keyFiles": [
+        "project.pbxproj"
+      ]
+    },
+    "scripts": {
+      "path": "scripts",
+      "purpose": "Build/utility scripts",
+      "fileCount": 3,
+      "lastAccessed": 1778137682312,
+      "keyFiles": [
+        "asc_api.py",
+        "submit.py",
+        "upload_screenshots.py"
+      ]
+    }
+  },
+  "hotPaths": [
+    {
+      "path": "scripts\\submit.py",
+      "accessCount": 3,
+      "lastAccessed": 1778138078396,
+      "type": "file"
+    }
+  ],
+  "userDirectives": []
+}

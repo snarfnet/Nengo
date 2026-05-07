@@ -1,0 +1,7 @@
+{
+  "tool_name": "Bash",
+  "tool_input_preview": "{\"command\":\"type \\\"C:\\\\Users\\\\Windows\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Users-Windows\\\\1efaa8ce-6420-45da-9789-8356807bbc1b\\\\tasks\\\\b2ixd0dle.output\\\" 2>/dev/null\",\"description\":\"Read scraper output w...",
+  "error": "Exit code 1",
+  "timestamp": "2026-05-07T06:54:57.881Z",
+  "retry_count": 1
+}
