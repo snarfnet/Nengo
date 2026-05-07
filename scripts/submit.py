@@ -110,36 +110,66 @@ def main():
             else:
                 raise
 
-    # Clean up any stale review submissions
+    # Clean up ALL stale review submissions (any non-submitted state)
+    for state in ["READY_FOR_REVIEW", "COMPLETING", "UNRESOLVED_ISSUES"]:
+        try:
+            existing = api("GET", f"/apps/{app_id}/reviewSubmissions?filter[state]={state}")
+            for item in existing.get("data", []):
+                try:
+                    api("DELETE", f"/reviewSubmissions/{item['id']}")
+                    print(f"Deleted review submission {item['id']} (state={state})")
+                except RuntimeError as e:
+                    print(f"Could not delete {item['id']}: {e}")
+        except RuntimeError:
+            pass
+
+    # Try to create, or reuse existing submission
     try:
-        existing = api("GET", f"/apps/{app_id}/reviewSubmissions?filter[state]=READY_FOR_REVIEW")
-        for item in existing.get("data", []):
+        review = api("POST", "/reviewSubmissions", json={
+            "data": {
+                "type": "reviewSubmissions",
+                "attributes": {"platform": "IOS"},
+                "relationships": {"app": {"data": {"type": "apps", "id": app_id}}},
+            }
+        })
+        review_id = review["data"]["id"]
+        print(f"Created review submission {review_id}")
+
+        api("POST", "/reviewSubmissionItems", json={
+            "data": {
+                "type": "reviewSubmissionItems",
+                "relationships": {
+                    "reviewSubmission": {"data": {"type": "reviewSubmissions", "id": review_id}},
+                    "appStoreVersion": {"data": {"type": "appStoreVersions", "id": version_id}},
+                },
+            }
+        })
+    except RuntimeError as e:
+        if "CONCURRENT_REVIEW_SUBMISSION_LIMIT" in str(e) or "409" in str(e):
+            # Find an existing usable submission and add item to it
+            print(f"Cannot create new submission, finding existing...")
+            payload = api("GET", f"/apps/{app_id}/reviewSubmissions?filter[state]=READY_FOR_REVIEW")
+            if not payload.get("data"):
+                raise RuntimeError(f"No usable review submission found and cannot create new: {e}")
+            review_id = payload["data"][0]["id"]
+            print(f"Reusing review submission {review_id}")
             try:
-                api("DELETE", f"/reviewSubmissions/{item['id']}")
-                print(f"Deleted stale review submission {item['id']}")
-            except RuntimeError:
-                pass
-    except RuntimeError:
-        pass
-
-    review = api("POST", "/reviewSubmissions", json={
-        "data": {
-            "type": "reviewSubmissions",
-            "attributes": {"platform": "IOS"},
-            "relationships": {"app": {"data": {"type": "apps", "id": app_id}}},
-        }
-    })
-    review_id = review["data"]["id"]
-
-    api("POST", "/reviewSubmissionItems", json={
-        "data": {
-            "type": "reviewSubmissionItems",
-            "relationships": {
-                "reviewSubmission": {"data": {"type": "reviewSubmissions", "id": review_id}},
-                "appStoreVersion": {"data": {"type": "appStoreVersions", "id": version_id}},
-            },
-        }
-    })
+                api("POST", "/reviewSubmissionItems", json={
+                    "data": {
+                        "type": "reviewSubmissionItems",
+                        "relationships": {
+                            "reviewSubmission": {"data": {"type": "reviewSubmissions", "id": review_id}},
+                            "appStoreVersion": {"data": {"type": "appStoreVersions", "id": version_id}},
+                        },
+                    }
+                })
+            except RuntimeError as e2:
+                if "409" in str(e2):
+                    print("Review item already exists")
+                else:
+                    raise
+        else:
+            raise
 
     api("PATCH", f"/reviewSubmissions/{review_id}", json={
         "data": {"type": "reviewSubmissions", "id": review_id, "attributes": {"submitted": True}}
