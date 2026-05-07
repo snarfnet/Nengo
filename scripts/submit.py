@@ -1,7 +1,7 @@
 import os
 import time
 
-from asc_api import api, find_app_id, get_or_create_version
+from asc_api import api, find_app_id, get_or_create_version, get_localization_id
 
 APP_VERSION = os.environ.get("APP_VERSION", "1.1")
 REVIEW_CONTACT = {
@@ -72,33 +72,76 @@ def main():
             }
         })
 
+    for attempt in range(5):
+        try:
+            api("PATCH", f"/appStoreVersions/{version_id}/relationships/build", json={
+                "data": {"type": "builds", "id": build_id}
+            })
+            print("Build linked to version")
+            break
+        except RuntimeError as e:
+            if "409" in str(e):
+                print("Build already linked to version, skipping")
+                break
+            elif attempt < 4:
+                print(f"Build link attempt {attempt + 1} failed, retrying in 30s...")
+                time.sleep(30)
+            else:
+                raise
+
+    # Set whatsNew on localization
+    loc_id = get_localization_id(version_id)
+    if loc_id:
+        try:
+            api("PATCH", f"/appStoreVersionLocalizations/{loc_id}", json={
+                "data": {
+                    "type": "appStoreVersionLocalizations",
+                    "id": loc_id,
+                    "attributes": {
+                        "whatsNew": "画面デザインを刷新し、履歴書向けの学歴テンプレート機能を追加しました。",
+                    },
+                }
+            })
+            print("whatsNew set")
+        except RuntimeError as e:
+            if "409" in str(e):
+                print("whatsNew already set, skipping")
+            else:
+                raise
+
     try:
-        api("PATCH", f"/appStoreVersions/{version_id}/relationships/build", json={
-            "data": {"type": "builds", "id": build_id}
+        review = api("POST", "/reviewSubmissions", json={
+            "data": {
+                "type": "reviewSubmissions",
+                "attributes": {"platform": "IOS"},
+                "relationships": {"app": {"data": {"type": "apps", "id": app_id}}},
+            }
         })
+        review_id = review["data"]["id"]
     except RuntimeError as e:
         if "409" in str(e):
-            print("Build already linked to version, skipping")
+            print("Review submission already exists, fetching...")
+            payload = api("GET", f"/apps/{app_id}/reviewSubmissions?filter[state]=READY_FOR_REVIEW,WAITING_FOR_REVIEW")
+            review_id = payload["data"][0]["id"]
         else:
             raise
 
-    review = api("POST", "/reviewSubmissions", json={
-        "data": {
-            "type": "reviewSubmissions",
-            "attributes": {"platform": "IOS"},
-            "relationships": {"app": {"data": {"type": "apps", "id": app_id}}},
-        }
-    })
-    review_id = review["data"]["id"]
-    api("POST", "/reviewSubmissionItems", json={
-        "data": {
-            "type": "reviewSubmissionItems",
-            "relationships": {
-                "reviewSubmission": {"data": {"type": "reviewSubmissions", "id": review_id}},
-                "appStoreVersion": {"data": {"type": "appStoreVersions", "id": version_id}},
-            },
-        }
-    })
+    try:
+        api("POST", "/reviewSubmissionItems", json={
+            "data": {
+                "type": "reviewSubmissionItems",
+                "relationships": {
+                    "reviewSubmission": {"data": {"type": "reviewSubmissions", "id": review_id}},
+                    "appStoreVersion": {"data": {"type": "appStoreVersions", "id": version_id}},
+                },
+            }
+        })
+    except RuntimeError as e:
+        if "409" in str(e):
+            print("Review submission item already exists, skipping")
+        else:
+            raise
+
     api("PATCH", f"/reviewSubmissions/{review_id}", json={
         "data": {"type": "reviewSubmissions", "id": review_id, "attributes": {"submitted": True}}
     })
