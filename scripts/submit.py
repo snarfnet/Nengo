@@ -14,16 +14,14 @@ REVIEW_CONTACT = {
 
 
 def wait_for_build(app_id):
-    print(f"Waiting for processed build (expecting build {BUILD_NUMBER or 'any'})...")
+    print("Waiting for processed build...")
     for attempt in range(50):
-        payload = api("GET", f"/builds?filter[app]={app_id}&sort=-uploadedDate&limit=10")
+        payload = api("GET", f"/builds?filter[app]={app_id}&sort=-uploadedDate&limit=5")
         for item in payload.get("data", []):
             attrs = item["attributes"]
             version = attrs.get("version", "")
             state = attrs.get("processingState", "")
             print(f"  build {version}: {state}")
-            if BUILD_NUMBER and version != BUILD_NUMBER:
-                continue
             if version and state == "VALID":
                 return item["id"]
         print(f"  attempt {attempt + 1}/50, waiting 30s")
