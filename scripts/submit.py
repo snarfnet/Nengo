@@ -14,17 +14,19 @@ REVIEW_CONTACT = {
 
 
 def wait_for_build(app_id):
-    print("Waiting for processed build...")
-    for attempt in range(50):
-        payload = api("GET", f"/builds?filter[app]={app_id}&sort=-uploadedDate&limit=5")
+    print(f"Waiting for processed build (expecting build {BUILD_NUMBER or 'any'})...")
+    for attempt in range(60):
+        payload = api("GET", f"/builds?filter[app]={app_id}&sort=-uploadedDate&limit=10")
         for item in payload.get("data", []):
             attrs = item["attributes"]
             version = attrs.get("version", "")
             state = attrs.get("processingState", "")
             print(f"  build {version}: {state}")
-            if version and state == "VALID":
+            if BUILD_NUMBER and version == BUILD_NUMBER and state == "VALID":
                 return item["id"]
-        print(f"  attempt {attempt + 1}/50, waiting 30s")
+            elif not BUILD_NUMBER and version and state == "VALID":
+                return item["id"]
+        print(f"  attempt {attempt + 1}/60, waiting 30s")
         time.sleep(30)
     raise RuntimeError("No valid processed build found")
 
