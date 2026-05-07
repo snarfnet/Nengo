@@ -33,16 +33,28 @@ def main():
     version_id = get_or_create_version(app_id, APP_VERSION)
     build_id = wait_for_build(app_id)
 
-    api("PATCH", f"/builds/{build_id}", json={
-        "data": {"type": "builds", "id": build_id, "attributes": {"usesNonExemptEncryption": False}}
-    })
-    api("PATCH", f"/apps/{app_id}", json={
-        "data": {
-            "type": "apps",
-            "id": app_id,
-            "attributes": {"contentRightsDeclaration": "DOES_NOT_USE_THIRD_PARTY_CONTENT"},
-        }
-    })
+    try:
+        api("PATCH", f"/builds/{build_id}", json={
+            "data": {"type": "builds", "id": build_id, "attributes": {"usesNonExemptEncryption": False}}
+        })
+    except RuntimeError as e:
+        if "409" in str(e):
+            print("usesNonExemptEncryption already set, skipping")
+        else:
+            raise
+    try:
+        api("PATCH", f"/apps/{app_id}", json={
+            "data": {
+                "type": "apps",
+                "id": app_id,
+                "attributes": {"contentRightsDeclaration": "DOES_NOT_USE_THIRD_PARTY_CONTENT"},
+            }
+        })
+    except RuntimeError as e:
+        if "409" in str(e):
+            print("contentRightsDeclaration already set, skipping")
+        else:
+            raise
 
     review_details = api("GET", f"/appStoreVersions/{version_id}/appStoreReviewDetail")
     attrs = {**REVIEW_CONTACT, "demoAccountRequired": False, "demoAccountName": "", "demoAccountPassword": ""}
