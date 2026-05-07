@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
     <key>NSUserTrackingUsageDescription</key>
-    <string>�L���\���̂��߂Ƀf�o�C�X�����g�p���܂��B</string>
+    <string>最適な広告表示のためにデバイス情報を使用します。</string>
     <key>GADApplicationIdentifier</key>
     <string>ca-app-pub-9404799280370656~6849782320</string>
     <key>SKAdNetworkItems</key>
