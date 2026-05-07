@@ -153,7 +153,7 @@ struct ContentView: View {
                         TextField("1989", text: $seirekiInput)
                             .keyboardType(.numberPad)
                             .font(.system(size: 52, weight: .black, design: .rounded))
-                            .foregroundStyle(.charcoal)
+                            .foregroundStyle(Color.charcoal)
                         Text("年")
                             .font(.system(size: 26, weight: .bold))
                             .foregroundStyle(.secondary)
@@ -175,7 +175,7 @@ struct ContentView: View {
                             TextField("1", text: $warekiInput)
                                 .keyboardType(.numberPad)
                                 .font(.system(size: 52, weight: .black, design: .rounded))
-                                .foregroundStyle(.charcoal)
+                                .foregroundStyle(Color.charcoal)
                             Text("年")
                                 .font(.system(size: 26, weight: .bold))
                                 .foregroundStyle(.secondary)
@@ -213,7 +213,7 @@ struct ContentView: View {
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(warekiString(for: row.year))
                                     .font(.system(size: 17, weight: .black))
-                                    .foregroundStyle(.vermillion)
+                                    .foregroundStyle(Color.vermillion)
                                 Text("\(row.year)年 \(row.month)月")
                                     .font(.caption.weight(.semibold))
                                     .foregroundStyle(.secondary)
@@ -222,7 +222,7 @@ struct ContentView: View {
 
                             Text("\(row.school) \(row.event)")
                                 .font(.system(size: 17, weight: .semibold))
-                                .foregroundStyle(.charcoal)
+                                .foregroundStyle(Color.charcoal)
                                 .lineLimit(2)
                                 .minimumScaleFactor(0.85)
 
@@ -268,12 +268,12 @@ struct ContentView: View {
                     HStack(spacing: 12) {
                         Text(era.name)
                             .font(.system(size: 20, weight: .black, design: .serif))
-                            .foregroundStyle(.vermillion)
+                            .foregroundStyle(Color.vermillion)
                             .frame(width: 58, alignment: .leading)
 
                         Text("\(era.start)年 - \(era.end == 9999 ? "現在" : "\(era.end)年")")
                             .font(.system(size: 16, weight: .semibold))
-                            .foregroundStyle(.charcoal.opacity(0.78))
+                            .foregroundStyle(Color.charcoal.opacity(0.78))
 
                         Spacer()
 
@@ -324,7 +324,7 @@ private struct AppBackground: View {
         ZStack {
             Color.washi.ignoresSafeArea()
             LinearGradient(
-                colors: [.ivory.opacity(0.96), .washi, .greenInk.opacity(0.18)],
+                colors: [Color.ivory.opacity(0.96), Color.washi, Color.greenInk.opacity(0.18)],
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
             )
@@ -359,7 +359,7 @@ private struct ResultCard: View {
             if let result {
                 Text(result.main)
                     .font(.system(size: 48, weight: .black, design: .serif))
-                    .foregroundStyle(.ivory)
+                    .foregroundStyle(Color.ivory)
                     .lineLimit(1)
                     .minimumScaleFactor(0.62)
 
@@ -373,7 +373,7 @@ private struct ResultCard: View {
             } else {
                 Text(placeholder)
                     .font(.system(size: 16, weight: .semibold))
-                    .foregroundStyle(.ivory.opacity(0.82))
+                    .foregroundStyle(Color.ivory.opacity(0.82))
                     .multilineTextAlignment(.center)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 18)
@@ -382,7 +382,7 @@ private struct ResultCard: View {
         .frame(maxWidth: .infinity)
         .padding(22)
         .background(
-            LinearGradient(colors: [.charcoal, .greenInk], startPoint: .topLeading, endPoint: .bottomTrailing),
+            LinearGradient(colors: [Color.charcoal, Color.greenInk], startPoint: .topLeading, endPoint: .bottomTrailing),
             in: RoundedRectangle(cornerRadius: 8)
         )
         .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.brass.opacity(0.45)))
@@ -397,7 +397,7 @@ private struct ResultPill: View {
     var body: some View {
         Label(text, systemImage: icon)
             .font(.system(size: 14, weight: .bold))
-            .foregroundStyle(.ivory)
+            .foregroundStyle(Color.ivory)
             .lineLimit(1)
             .minimumScaleFactor(0.8)
             .padding(.horizontal, 10)
@@ -414,7 +414,7 @@ private struct SectionHeader: View {
         VStack(alignment: .leading, spacing: 4) {
             Text(title)
                 .font(.system(size: 18, weight: .black))
-                .foregroundStyle(.charcoal)
+                .foregroundStyle(Color.charcoal)
             Text(subtitle)
                 .font(.caption.weight(.semibold))
                 .foregroundStyle(.secondary)
@@ -490,7 +490,7 @@ private struct EducationRow: Identifiable {
     let event: String
 }
 
-private extension Color {
+extension Color {
     static let washi = Color(red: 0.89, green: 0.85, blue: 0.76)
     static let ivory = Color(red: 0.98, green: 0.95, blue: 0.86)
     static let charcoal = Color(red: 0.11, green: 0.11, blue: 0.10)
