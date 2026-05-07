@@ -110,41 +110,61 @@ def main():
             else:
                 raise
 
-    # Cancel all stale review submissions to free up the limit
-    for state in ["READY_FOR_REVIEW", "COMPLETING", "UNRESOLVED_ISSUES"]:
+    # Strategy: find existing READY_FOR_REVIEW submission with items, or prepare one
+    review_id = None
+    payload = api("GET", f"/apps/{app_id}/reviewSubmissions?filter[state]=READY_FOR_REVIEW")
+    for sub in payload.get("data", []):
+        sid = sub["id"]
+        # Check if this submission has items
+        items = api("GET", f"/reviewSubmissions/{sid}/items")
+        if items.get("data"):
+            review_id = sid
+            print(f"Found submission {sid} with items, using it")
+            break
+
+    if not review_id:
+        # Try to add item to first available submission
+        for sub in payload.get("data", []):
+            sid = sub["id"]
+            try:
+                api("POST", "/reviewSubmissionItems", json={
+                    "data": {
+                        "type": "reviewSubmissionItems",
+                        "relationships": {
+                            "reviewSubmission": {"data": {"type": "reviewSubmissions", "id": sid}},
+                            "appStoreVersion": {"data": {"type": "appStoreVersions", "id": version_id}},
+                        },
+                    }
+                })
+                review_id = sid
+                print(f"Added item to submission {sid}")
+                break
+            except RuntimeError as e:
+                print(f"Could not add item to {sid}: {e}")
+
+    if not review_id:
+        # Last resort: create new
         try:
-            existing = api("GET", f"/apps/{app_id}/reviewSubmissions?filter[state]={state}")
-            for item in existing.get("data", []):
-                try:
-                    api("PATCH", f"/reviewSubmissions/{item['id']}", json={
-                        "data": {"type": "reviewSubmissions", "id": item["id"], "attributes": {"canceled": True}}
-                    })
-                    print(f"Canceled review submission {item['id']} (state={state})")
-                except RuntimeError as e:
-                    print(f"Could not cancel {item['id']}: {e}")
-        except RuntimeError:
-            pass
-
-    # Create fresh submission
-    review = api("POST", "/reviewSubmissions", json={
-        "data": {
-            "type": "reviewSubmissions",
-            "attributes": {"platform": "IOS"},
-            "relationships": {"app": {"data": {"type": "apps", "id": app_id}}},
-        }
-    })
-    review_id = review["data"]["id"]
-    print(f"Created review submission {review_id}")
-
-    api("POST", "/reviewSubmissionItems", json={
-        "data": {
-            "type": "reviewSubmissionItems",
-            "relationships": {
-                "reviewSubmission": {"data": {"type": "reviewSubmissions", "id": review_id}},
-                "appStoreVersion": {"data": {"type": "appStoreVersions", "id": version_id}},
-            },
-        }
-    })
+            review = api("POST", "/reviewSubmissions", json={
+                "data": {
+                    "type": "reviewSubmissions",
+                    "attributes": {"platform": "IOS"},
+                    "relationships": {"app": {"data": {"type": "apps", "id": app_id}}},
+                }
+            })
+            review_id = review["data"]["id"]
+            print(f"Created review submission {review_id}")
+            api("POST", "/reviewSubmissionItems", json={
+                "data": {
+                    "type": "reviewSubmissionItems",
+                    "relationships": {
+                        "reviewSubmission": {"data": {"type": "reviewSubmissions", "id": review_id}},
+                        "appStoreVersion": {"data": {"type": "appStoreVersions", "id": version_id}},
+                    },
+                }
+            })
+        except RuntimeError as e:
+            raise RuntimeError(f"Cannot create or find usable review submission: {e}")
 
     api("PATCH", f"/reviewSubmissions/{review_id}", json={
         "data": {"type": "reviewSubmissions", "id": review_id, "attributes": {"submitted": True}}
