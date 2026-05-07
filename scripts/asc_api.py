@@ -8,7 +8,7 @@ import requests
 KEY_ID = os.environ.get("ASC_KEY_ID", "WDXGY9WX55")
 ISSUER_ID = os.environ.get("ASC_ISSUER_ID", "2be0734f-943a-4d61-9dc9-5d9045c46fec")
 KEY_PATH = Path.home() / ".appstoreconnect" / "private_keys" / f"AuthKey_{KEY_ID}.p8"
-BUNDLE_ID = "com.tokyonasu.Nengo"
+BUNDLE_ID = "com.snarfnet.nengo"
 BASE_URL = "https://api.appstoreconnect.apple.com/v1"
 
 
