@@ -10,17 +10,25 @@ ISSUER_ID = os.environ.get("ASC_ISSUER_ID", "2be0734f-943a-4d61-9dc9-5d9045c46fe
 KEY_PATH = Path.home() / ".appstoreconnect" / "private_keys" / f"AuthKey_{KEY_ID}.p8"
 BUNDLE_ID = "com.snarfnet.nengo"
 BASE_URL = "https://api.appstoreconnect.apple.com/v1"
+_TOKEN = None
+_TOKEN_EXPIRES_AT = 0
 
 
 def make_token():
-    key = KEY_PATH.read_text()
+    global _TOKEN, _TOKEN_EXPIRES_AT
     now = int(time.time())
-    return jwt.encode(
+    if _TOKEN and now < _TOKEN_EXPIRES_AT - 60:
+        return _TOKEN
+
+    key = KEY_PATH.read_text()
+    _TOKEN_EXPIRES_AT = now + 900
+    _TOKEN = jwt.encode(
         {"iss": ISSUER_ID, "iat": now, "exp": now + 1200, "aud": "appstoreconnect-v1"},
         key,
         algorithm="ES256",
         headers={"kid": KEY_ID},
     )
+    return _TOKEN
 
 
 def headers():
