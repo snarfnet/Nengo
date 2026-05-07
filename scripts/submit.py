@@ -72,9 +72,15 @@ def main():
             }
         })
 
-    api("PATCH", f"/appStoreVersions/{version_id}/relationships/build", json={
-        "data": {"type": "builds", "id": build_id}
-    })
+    try:
+        api("PATCH", f"/appStoreVersions/{version_id}/relationships/build", json={
+            "data": {"type": "builds", "id": build_id}
+        })
+    except RuntimeError as e:
+        if "409" in str(e):
+            print("Build already linked to version, skipping")
+        else:
+            raise
 
     review = api("POST", "/reviewSubmissions", json={
         "data": {
