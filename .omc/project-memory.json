@@ -78,8 +78,14 @@
   "hotPaths": [
     {
       "path": "scripts\\submit.py",
-      "accessCount": 3,
-      "lastAccessed": 1778138078396,
+      "accessCount": 6,
+      "lastAccessed": 1778140747193,
+      "type": "file"
+    },
+    {
+      "path": "Nengo\\Info.plist",
+      "accessCount": 2,
+      "lastAccessed": 1778141054001,
       "type": "file"
     }
   ],
