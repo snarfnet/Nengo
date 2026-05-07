@@ -1,0 +1,238 @@
+﻿// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		831C89E1666C4DBD8AFF6692 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A63606C93A324E35BE315351 /* Info.plist */; };
+
+		DE48DED961994E7190710AA3 /* NengoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C36C2C1F9B240B5B8284A2E /* NengoApp.swift */; };
+
+		9E286824BC2C420B91313F46 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12AE9DFCE8EE4293B6AA55C5 /* ContentView.swift */; };
+
+		7001A33C5CD3451E8465D8CD /* BannerAdView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40CB43A520B34FF4BFF0F764 /* BannerAdView.swift */; };
+		C1D7B7BB6AC44F24B5B9F3A1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B8B05D6D7CE84B1A9A7B2F11 /* Assets.xcassets */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		1A8521A237F746E3924C6632 /* Nengo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Nengo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A63606C93A324E35BE315351 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+
+		5C36C2C1F9B240B5B8284A2E /* NengoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NengoApp.swift; sourceTree = "<group>"; };
+
+		12AE9DFCE8EE4293B6AA55C5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+
+		40CB43A520B34FF4BFF0F764 /* BannerAdView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BannerAdView.swift; sourceTree = "<group>"; };
+		B8B05D6D7CE84B1A9A7B2F11 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A9299BDB365449AEAD1E726E = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = ();
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		152D03E5324042AA9FEBE8F3 = {
+			isa = PBXGroup;
+			children = (
+				A31093D2A9EE4CF9A385EB25 /* Nengo */,
+				0E4171682A3F4BEFBB83E9A4 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A31093D2A9EE4CF9A385EB25 /* Nengo */ = {
+			isa = PBXGroup;
+			children = (
+				5C36C2C1F9B240B5B8284A2E /* NengoApp.swift */,
+				12AE9DFCE8EE4293B6AA55C5 /* ContentView.swift */,
+				40CB43A520B34FF4BFF0F764 /* BannerAdView.swift */,
+				B8B05D6D7CE84B1A9A7B2F11 /* Assets.xcassets */,
+				A63606C93A324E35BE315351 /* Info.plist */,
+			);
+			path = Nengo;
+			sourceTree = "<group>";
+		};
+		0E4171682A3F4BEFBB83E9A4 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1A8521A237F746E3924C6632 /* Nengo.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		0DB6C21D200446EA94181D2A /* Nengo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 69E824223B7E4DE2ACD76EAA /* Build configuration list for PBXNativeTarget "Nengo" */;
+			buildPhases = (
+				592F557C890248A0A77A3A53 /* Sources */,
+				A9299BDB365449AEAD1E726E /* Frameworks */,
+				8BE914A07F664B85BC7C080C /* Resources */,
+			);
+			buildRules = ();
+			dependencies = ();
+			name = Nengo;
+			productName = Nengo;
+			productReference = 1A8521A237F746E3924C6632 /* Nengo.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		C8C192A903254CF780A681AE /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					0DB6C21D200446EA94181D2A = {
+						CreatedOnToolsVersion = 15.0;
+					};
+				};
+			};
+			buildConfigurationList = 96276B96685D44578924F45C /* Build configuration list for PBXProject "Nengo" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = ja;
+			hasScannedForEncodings = 0;
+			knownRegions = (ja, en, Base);
+			mainGroup = 152D03E5324042AA9FEBE8F3;
+			productRefGroup = 0E4171682A3F4BEFBB83E9A4 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (0DB6C21D200446EA94181D2A /* Nengo */);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8BE914A07F664B85BC7C080C = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C1D7B7BB6AC44F24B5B9F3A1 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		592F557C890248A0A77A3A53 = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DE48DED961994E7190710AA3 /* NengoApp.swift in Sources */,
+				9E286824BC2C420B91313F46 /* ContentView.swift in Sources */,
+				7001A33C5CD3451E8465D8CD /* BannerAdView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		F80C8C6836EC4412ACF299C7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_TESTABILITY = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+			};
+			name = Debug;
+		};
+		A60F684D33FE47ADAEB5EB6A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		D9D63A9F0A4A4983BA253555 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASCETIC_COMPLIANCE = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 83VGKGSQUH;
+				INFOPLIST_FILE = Nengo/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "年号変換";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LE_SWIFT_VERSION = 5.0;
+				MARKETING_VERSION = 1.1;
+				CURRENT_PROJECT_VERSION = 2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tokyonasu.Nengo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		9CE947C30407450182C5D3AF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASCETIC_COMPLIANCE = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 83VGKGSQUH;
+				INFOPLIST_FILE = Nengo/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "年号変換";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LE_SWIFT_VERSION = 5.0;
+				MARKETING_VERSION = 1.1;
+				CURRENT_PROJECT_VERSION = 2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tokyonasu.Nengo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		96276B96685D44578924F45C /* Build configuration list for PBXProject "Nengo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (F80C8C6836EC4412ACF299C7 /* Debug */, A60F684D33FE47ADAEB5EB6A /* Release */);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		69E824223B7E4DE2ACD76EAA /* Build configuration list for PBXNativeTarget "Nengo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (D9D63A9F0A4A4983BA253555 /* Debug */, 9CE947C30407450182C5D3AF /* Release */);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = C8C192A903254CF780A681AE /* Project object */;
+}
+

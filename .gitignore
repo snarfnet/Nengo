@@ -1,0 +1,12 @@
+.DS_Store
+DerivedData/
+build/
+Pods/
+*.xcworkspace
+*.xcuserstate
+xcuserdata/
+*.ipa
+*.xcarchive
+*.p8
+*.p12
+cert.p12

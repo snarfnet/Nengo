@@ -1,0 +1,82 @@
+import os
+import time
+from pathlib import Path
+
+import jwt
+import requests
+
+KEY_ID = os.environ.get("ASC_KEY_ID", "WDXGY9WX55")
+ISSUER_ID = os.environ.get("ASC_ISSUER_ID", "2be0734f-943a-4d61-9dc9-5d9045c46fec")
+KEY_PATH = Path.home() / ".appstoreconnect" / "private_keys" / f"AuthKey_{KEY_ID}.p8"
+BUNDLE_ID = "com.tokyonasu.Nengo"
+BASE_URL = "https://api.appstoreconnect.apple.com/v1"
+
+
+def make_token():
+    key = KEY_PATH.read_text()
+    now = int(time.time())
+    return jwt.encode(
+        {"iss": ISSUER_ID, "iat": now, "exp": now + 1200, "aud": "appstoreconnect-v1"},
+        key,
+        algorithm="ES256",
+        headers={"kid": KEY_ID},
+    )
+
+
+def headers():
+    return {"Authorization": f"Bearer {make_token()}", "Content-Type": "application/json"}
+
+
+def api(method, path, **kwargs):
+    response = requests.request(method, f"{BASE_URL}{path}", headers=headers(), **kwargs)
+    if not response.ok:
+        raise RuntimeError(f"{method} {path} failed: {response.status_code} {response.text}")
+    return response.json() if response.text else {}
+
+
+def find_app_id():
+    payload = api("GET", f"/apps?filter[bundleId]={BUNDLE_ID}")
+    items = payload.get("data", [])
+    if not items:
+        raise RuntimeError(f"App not found for bundle id: {BUNDLE_ID}")
+    return items[0]["id"]
+
+
+def get_or_create_version(app_id, version_string):
+    states = "PREPARE_FOR_SUBMISSION,DEVELOPER_REJECTED,REJECTED,METADATA_REJECTED"
+    payload = api("GET", f"/apps/{app_id}/appStoreVersions?filter[platform]=IOS&filter[appStoreState]={states}&limit=10")
+    for item in payload.get("data", []):
+        if item["attributes"].get("versionString") == version_string:
+            return item["id"]
+
+    payload = api("POST", "/appStoreVersions", json={
+        "data": {
+            "type": "appStoreVersions",
+            "attributes": {"platform": "IOS", "versionString": version_string},
+            "relationships": {"app": {"data": {"type": "apps", "id": app_id}}},
+        }
+    })
+    return payload["data"]["id"]
+
+
+def get_localization_id(version_id):
+    payload = api("GET", f"/appStoreVersions/{version_id}/appStoreVersionLocalizations")
+    items = payload.get("data", [])
+    if items:
+        return items[0]["id"]
+
+    payload = api("POST", "/appStoreVersionLocalizations", json={
+        "data": {
+            "type": "appStoreVersionLocalizations",
+            "attributes": {
+                "locale": "ja",
+                "description": "西暦と和暦をすばやく変換できる年号変換アプリです。履歴書向けの学歴テンプレートも作成できます。",
+                "keywords": "年号,和暦,西暦,昭和,平成,令和,履歴書,学歴",
+                "marketingUrl": "https://snarfnet.github.io/",
+                "supportUrl": "https://snarfnet.github.io/",
+                "whatsNew": "画面デザインを刷新し、履歴書向けの学歴テンプレート機能を追加しました。",
+            },
+            "relationships": {"appStoreVersion": {"data": {"type": "appStoreVersions", "id": version_id}}},
+        }
+    })
+    return payload["data"]["id"]
